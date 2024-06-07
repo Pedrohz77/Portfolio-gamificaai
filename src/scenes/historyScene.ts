@@ -15,7 +15,7 @@ export class historyScene extends Scene {
             // Se elemento ainda está visivel
             if (opacidade > 0) {
             // Diminuir a opacidade
-            opacidade = opacidade - 0.03
+            opacidade = opacidade - 0.01
 
             // Atualizar a opacidade do elemento
             elemento.style.opacity = opacidade.toString()
@@ -45,7 +45,7 @@ export class historyScene extends Scene {
 
         // Inseri o elementoTexto no container-game
         let containerGame = document.querySelector(".container-game") as HTMLElement
-        containerGame.appendChild(this.elementoTexto)
+        containerGame?.appendChild(this.elementoTexto)
 
         // Adicionar classe na div criada("elementoTexto")
         this.elementoTexto?.classList.add("sobre-gamifica")
