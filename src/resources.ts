@@ -15,7 +15,6 @@ import tsxBibliotecaPath from "./maps/tileset_biblioteca.tsx?url"
 
 import tmxMapaPath from "./maps/showroom_map.tmx?url"
 
-
 export const Resources = {
   Sword: new ImageSource(sword),
   Logo: new ImageSource(logo), 
