@@ -1,16 +1,20 @@
-import { Actor, Animation, CollisionType, Color, Engine, KeyEvent, Keys, SpriteSheet, Vector, vec } from "excalibur";
+import { Actor, Animation, Collider, CollisionContact, CollisionType, Color, Engine, KeyEvent, Keys, Side, SpriteSheet, Vector, vec } from "excalibur";
 import { Resources } from "../resources";
 
 export class player extends Actor {
     // Propriedades do player
     private velocidade: number = 180
+    private ultimaDirecao: string = "down"
+
+    private temObjetoProximo: boolean = false
+    private ultimoColisor?: Collider
 
     // Configuração do Player
     constructor(posicao: Vector) {
         super({
             pos: posicao,
-            width: 32,
-            height: 32,
+            width: 32, // 35
+            height: 32, // 50
             name: "Jogador",
             color: Color.Red,
             collisionType: CollisionType.Active
@@ -19,7 +23,7 @@ export class player extends Actor {
 
     onInitialize(engine: Engine<any>): void {
         // Ativar o modo de Debug
-        // engine.toggleDebug()
+        engine.toggleDebug()
         
         // Configurar sprite do player
         const PlayerSpritSheet = SpriteSheet.fromImageSource({
@@ -32,7 +36,7 @@ export class player extends Actor {
             },
             spacing: {
                 originOffset: {
-                    y: 4     //8
+                    y: 0   //4  //8
                 }
             }
         })
@@ -44,6 +48,7 @@ export class player extends Actor {
 
         // Criar as animações
         const duracaoFrameAnimacao = 70
+        
         // Animações Idle
         // Idle Esquerda
         const leftIdle = new Animation({
@@ -58,23 +63,112 @@ export class player extends Actor {
             frameDuration: duracaoFrameAnimacao
         })
         this.graphics.add("left-idle", leftIdle)
-        this.graphics.use("left-idle")
+        // this.graphics.use("left-idle")
 
         const rightIdle = new Animation({
             frames: [
+                { graphic: PlayerSpritSheet.getSprite(0, 1)},
                 { graphic: PlayerSpritSheet.getSprite(1, 1)},
                 { graphic: PlayerSpritSheet.getSprite(2, 1)},
                 { graphic: PlayerSpritSheet.getSprite(3, 1)},
                 { graphic: PlayerSpritSheet.getSprite(4, 1)},
-                { graphic: PlayerSpritSheet.getSprite(5, 1)},
-                { graphic: PlayerSpritSheet.getSprite(6, 1)}
+                { graphic: PlayerSpritSheet.getSprite(5, 1)}
             ], 
-                
             frameDuration: duracaoFrameAnimacao
         })
         this.graphics.add("right-idle", rightIdle)
-        this.graphics.use("right-idle")
+        // this.graphics.use("right-idle")
 
+        const upIdle = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(6, 1)},
+                { graphic: PlayerSpritSheet.getSprite(7, 1)},
+                { graphic: PlayerSpritSheet.getSprite(8, 1)},
+                { graphic: PlayerSpritSheet.getSprite(9, 1)},
+                { graphic: PlayerSpritSheet.getSprite(10, 1)},
+                { graphic: PlayerSpritSheet.getSprite(11, 1)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("up-idle", upIdle)
+        // this.graphics.use("Up-idle")
+
+        const downIdle = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(18, 1)},
+                { graphic: PlayerSpritSheet.getSprite(19, 1)},
+                { graphic: PlayerSpritSheet.getSprite(20, 1)},
+                { graphic: PlayerSpritSheet.getSprite(21, 1)},
+                { graphic: PlayerSpritSheet.getSprite(22, 1)},
+                { graphic: PlayerSpritSheet.getSprite(23, 1)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("down-idle", downIdle)
+        // this.graphics.use("down-idle")
+
+        // Definir animação inicial do player
+        this.graphics.use("down-idle")
+
+        // Definir zoom
+        // this.graphics.current!.scale = vec(1.6, 1.6)
+
+        // Animações Walk
+        // Andar para esquerda
+        const leftWalk = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(12, 2)},
+                { graphic: PlayerSpritSheet.getSprite(13, 2)},
+                { graphic: PlayerSpritSheet.getSprite(14, 2)},
+                { graphic: PlayerSpritSheet.getSprite(15, 2)},
+                { graphic: PlayerSpritSheet.getSprite(16, 2)},
+                { graphic: PlayerSpritSheet.getSprite(17, 2)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("left-walk", leftWalk)
+
+        // Andar para direita 
+        const rightWalk = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(0, 2)},
+                { graphic: PlayerSpritSheet.getSprite(1, 2)},
+                { graphic: PlayerSpritSheet.getSprite(2, 2)},
+                { graphic: PlayerSpritSheet.getSprite(3, 2)},
+                { graphic: PlayerSpritSheet.getSprite(4, 2)},
+                { graphic: PlayerSpritSheet.getSprite(5, 2)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("right-walk", rightWalk)
+
+        // Andar para cima
+        const uptWalk = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(6, 2)},
+                { graphic: PlayerSpritSheet.getSprite(7, 2)},
+                { graphic: PlayerSpritSheet.getSprite(8, 2)},
+                { graphic: PlayerSpritSheet.getSprite(9, 2)},
+                { graphic: PlayerSpritSheet.getSprite(10, 2)},
+                { graphic: PlayerSpritSheet.getSprite(11, 2)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("up-walk", uptWalk)
+
+        // Andar para baixo
+        const downWalk = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(18, 2)},
+                { graphic: PlayerSpritSheet.getSprite(19, 2)},
+                { graphic: PlayerSpritSheet.getSprite(20, 2)},
+                { graphic: PlayerSpritSheet.getSprite(21, 2)},
+                { graphic: PlayerSpritSheet.getSprite(22, 2)},
+                { graphic: PlayerSpritSheet.getSprite(23, 2)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("down-walk", downWalk)
 
         // Configurar player para monitorar evento "hold" -> segurar tecla
         engine.input.keyboard.on("hold", (event) => {
@@ -85,6 +179,14 @@ export class player extends Actor {
                     // Mover para esquerda
                     // Define a velocidade x para negativa, que significa movimentar o player para a esquerda
                     this.vel.x = -this.velocidade
+
+                    // Definir animação
+                    this.graphics.use("left-walk")
+                    // this.graphics.current!.scale = vec(1.7, 1.7)
+
+                    // Guardar ultima direção
+                    this.ultimaDirecao = "left"
+
                     break;
 
                 case Keys.Right:
@@ -92,6 +194,14 @@ export class player extends Actor {
                     // Mover para direita
                     // Define a velocidade x para positiva, que significa movimentar o player para a direita
                     this.vel.x = this.velocidade
+
+                    // Definir animação
+                    this.graphics.use("right-walk")
+                    // this.graphics.current!.scale = vec(1.7, 1.7)
+
+                    // Guardar ultima direção
+                    this.ultimaDirecao = "right"
+
                     break;
 
                 case Keys.Up:
@@ -99,6 +209,14 @@ export class player extends Actor {
                     // Mover para cima
                     // Define a velocidade x para positiva, que significa movimentar o player para cima
                     this.vel.y = -this.velocidade
+
+                    // Definir animação
+                    this.graphics.use("up-walk")
+                    // this.graphics.current!.scale = vec(1.7, 1.7)
+
+                    // Guardar ultima direção
+                    this.ultimaDirecao = "up"
+
                     break;
                 
                 case Keys.Down:
@@ -106,6 +224,14 @@ export class player extends Actor {
                     // Mover para baixo
                     // Define a velocidade x para positiva, que significa movimentar o player para baixo
                     this.vel.y = this.velocidade
+                    
+                    // Definir animação
+                    this.graphics.use("down-walk")
+                    // this.graphics.current!.scale = vec(1.7, 1.7)
+                    
+                      // Guardar ultima direção
+                      this.ultimaDirecao = "down"
+
                     break;
 
                 default:
@@ -141,6 +267,33 @@ export class player extends Actor {
                 // Zerar velocidade vertical
                 this.vel.y = 0
             }
+                // Ao parar o player, definir animação idle da ultima direção
+                if (this.vel.x == 0 && this.vel.y == 0 ) {
+                    // ultimaDirecao - left, right, up, down
+                    // Colar a ultimaDirecao + -idle -> ex. left-idle, right-idle, up-idle
+                    this.graphics.use(this.ultimaDirecao + "-idle")
+                    // athis.graphics.current!.scale = vec(1.6, 1.6)
+                }
+            
         })
+    }
+
+    onPostCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
+        // Indicar que tem um objeto proximo
+        this.temObjetoProximo = true
+
+        // Registrar o ultimo objeto colidido
+        this.ultimoColisor = other
+
+    }
+
+    onPostUpdate(engine: Engine<any>, delta: number): void {
+        // Detectar se o player está distante do ultimo objeto colidido
+        if (this.ultimoColisor && this.pos.distance(this.ultimoColisor.worldPos) > 40 ) {
+            // Marcar que o objeto não está próximo
+            this.temObjetoProximo = false
+
+            console.log("Está longe");
+        }
     }
 }
