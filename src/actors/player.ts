@@ -1,13 +1,14 @@
-import { Actor, CollisionType, Color, Engine, KeyEvent, Keys, vec } from "excalibur";
+import { Actor, Animation, CollisionType, Color, Engine, KeyEvent, Keys, SpriteSheet, Vector, vec } from "excalibur";
+import { Resources } from "../resources";
 
 export class player extends Actor {
     // Propriedades do player
     private velocidade: number = 180
 
     // Configuração do Player
-    constructor() {
+    constructor(posicao: Vector) {
         super({
-            pos: vec(600, 520),
+            pos: posicao,
             width: 32,
             height: 32,
             name: "Jogador",
@@ -17,6 +18,64 @@ export class player extends Actor {
     }
 
     onInitialize(engine: Engine<any>): void {
+        // Ativar o modo de Debug
+        // engine.toggleDebug()
+        
+        // Configurar sprite do player
+        const PlayerSpritSheet = SpriteSheet.fromImageSource({
+            image: Resources.PlayerSpritSheet,
+            grid: {
+                spriteWidth: 32,  // 16
+                spriteHeight: 64, // 32
+                columns: 56,
+                rows: 20
+            },
+            spacing: {
+                originOffset: {
+                    y: 4     //8
+                }
+            }
+        })
+
+        let imagePlayer = PlayerSpritSheet.getSprite(3, 0)
+        // imagePlayer.scale = vec(1.5, 1.5)
+
+        this.graphics.add(imagePlayer)
+
+        // Criar as animações
+        const duracaoFrameAnimacao = 70
+        // Animações Idle
+        // Idle Esquerda
+        const leftIdle = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(12, 1)},
+                { graphic: PlayerSpritSheet.getSprite(13, 1)},
+                { graphic: PlayerSpritSheet.getSprite(14, 1)},
+                { graphic: PlayerSpritSheet.getSprite(15, 1)},
+                { graphic: PlayerSpritSheet.getSprite(16, 1)},
+                { graphic: PlayerSpritSheet.getSprite(17, 1)}
+            ], 
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("left-idle", leftIdle)
+        this.graphics.use("left-idle")
+
+        const rightIdle = new Animation({
+            frames: [
+                { graphic: PlayerSpritSheet.getSprite(1, 1)},
+                { graphic: PlayerSpritSheet.getSprite(2, 1)},
+                { graphic: PlayerSpritSheet.getSprite(3, 1)},
+                { graphic: PlayerSpritSheet.getSprite(4, 1)},
+                { graphic: PlayerSpritSheet.getSprite(5, 1)},
+                { graphic: PlayerSpritSheet.getSprite(6, 1)}
+            ], 
+                
+            frameDuration: duracaoFrameAnimacao
+        })
+        this.graphics.add("right-idle", rightIdle)
+        this.graphics.use("right-idle")
+
+
         // Configurar player para monitorar evento "hold" -> segurar tecla
         engine.input.keyboard.on("hold", (event) => {
             // Detectar qual tecla está pressionada

@@ -177,7 +177,7 @@
   <object id="17" name="mesa_tv" x="99.25" y="351.932" width="21.3182" height="57.4773"/>
   <object id="18" name="mesa_game" x="153.614" y="353.818" width="76.75" height="74.3693"/>
   <object id="19" name="cadeira" x="169.273" y="428.568" width="45.2727" height="30.2273"/>
-  <object id="20" name="cadeira" x="245.273" y="358.909" width="39.4545" height="54.9091"/>
+  <object id="20" name="cadeira" x="245.273" y="371.909" width="39.4545" height="41.9091"/>
   <object id="21" name="vaso_planta" x="101.455" y="119.455" width="21.0909" height="22.9091"/>
   <object id="22" name="vaso_planta" x="805.413" y="119.788" width="20.9659" height="22.7841"/>
   <object id="23" name="fliperama" x="159.25" y="118" width="65.25" height="32.8333"/>
