@@ -246,7 +246,6 @@ export class player extends Actor {
         // Configura o player para monitorar evento "release" -> soltar
         engine.input.keyboard.on("release", (event) => {
             // Fazer o player parar ao soltar as teclas de movimentação
-            // Parar movimentação lateral ao soltar as teclas de movimentação lateral
             if (
                 event.key == Keys.A || 
                 event.key == Keys.Left ||
@@ -276,9 +275,51 @@ export class player extends Actor {
                 }
             
         })
+
+        // Configura o player para monitor evento "press" -> pressionar
+        engine.input.keyboard.on("press", (event) => {
+            // Se a teclha pressionada for a F
+            if(event.key == Keys.F && this.temObjetoProximo) {
+               
+                // Identificar o alvo a interação
+                if (this.ultimoColisor?.owner.name == "mesa_stand_a") {
+                    console.log("Essa é a mesa A");
+
+                    // Vai para a cena passando qual o objeto da interação
+                    engine.goToScene("case", {
+                        sceneActivationData: {
+                            // Passa o nome do Actor que interagiu com o Player
+                            nomeDoActor: this.ultimoColisor?.owner.name
+                        }
+                    })
+                }
+
+                if (this.ultimoColisor?.owner.name == "mesa_stand_b") {
+                    console.log("Essa é a mesa B");
+                     // Vai para a cena passando qual o objeto da interação
+                     engine.goToScene("case", {
+                        sceneActivationData: {
+                            // Passa o nome do Actor que interagiu com o Player
+                            nomeDoActor: this.ultimoColisor?.owner.name
+                        }
+                    })  
+                }
+
+                if (this.ultimoColisor?.owner.name == "mesa_stand_c") {
+                    console.log("Essa é a mesa C");
+                    // Vai para a cena passando qual o objeto da interação
+                    engine.goToScene("case", {
+                        sceneActivationData: {
+                            // Passa o nome do Actor que interagiu com o Player
+                            nomeDoActor: this.ultimoColisor?.owner.name
+                        }
+                    })
+                }
+            }
+        }) 
     }
 
-    onPostCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
+    onPreCollisionResolve(self: Collider, other: Collider, side: Side, contact: CollisionContact): void {
         // Indicar que tem um objeto proximo
         this.temObjetoProximo = true
 
@@ -287,7 +328,7 @@ export class player extends Actor {
 
     }
 
-    onPostUpdate(engine: Engine<any>, delta: number): void {
+    onPreUpdate(engine: Engine<any>, delta: number): void {
         // Detectar se o player está distante do ultimo objeto colidido
         if (this.ultimoColisor && this.pos.distance(this.ultimoColisor.worldPos) > 40 ) {
             // Marcar que o objeto não está próximo

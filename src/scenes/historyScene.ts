@@ -64,7 +64,7 @@ export class historyScene extends Scene {
 
         let logoVertical = Resources.logoVertical.toSprite()
 
-        logoVertical.scale = vec(0.7, 0.7)
+        logoVertical.scale = vec(1.0, 1.0)
 
         actorVertical.graphics.add(logoVertical)
         
