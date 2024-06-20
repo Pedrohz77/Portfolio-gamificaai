@@ -36,7 +36,7 @@ export class caseScene extends Scene {
     
             this.elementoCases?.classList.add("sobre-gamifica")
     
-            this.elementoCases.innerHTML = `<h2>Escola "Estrela do Amanhã"/h2>
+            this.elementoCases.innerHTML = `<h2>Escola "Estrela do Amanhã"<h2>
             <p>A implementação ousada da gamificação nas tarefas escolares, uma mudança que transformou a maneira como os alunos encaravam seus estudos diários. Antes, a matemática parecia um labirinto sem fim de números entediantes e equações complicadas. Hoje, porém, os alunos se viam em uma jornada emocionante através de "Mundo dos Números", onde cada problema resolvido os aproximava da próxima conquista. Multiplicar e dividir tornou-se desafios a serem superados, cada resposta certa sendo uma chave para desbloquear novos níveis e prêmios.</p>`
 
             

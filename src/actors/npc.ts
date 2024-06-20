@@ -136,10 +136,4 @@ export class Npc extends Actor {
      
         this.graphics.use(spriteNPC)
     }
-
-    
-    
-
-    
 }
-
